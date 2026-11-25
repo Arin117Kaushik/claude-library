@@ -223,7 +223,7 @@ function outline(mesh, w, h, d) {
 function dispose(g) { if (g) { g.traverse((o) => o.geometry && o.geometry.dispose()); scene.remove(g); } }
 
 // A glass bowl with sand, coral, seaweed, bubbles and one clownfish. Purely for the room.
-let fishbowl = null, organizerAt = [0, 0, 0];
+let fishbowl = null, organizerAt = [0, 0, 0], posterGroup = null;
 function buildFishbowl(group, x, z) {
   const R = 0.52, cy = R * 0.92, b = new THREE.Group(); b.position.set(x, topY, z); group.add(b);
   const glassy = (color, opacity) => toon({ color, transparent: true, opacity, depthWrite: false });
@@ -275,11 +275,12 @@ function buildRoom() {
   wall.position.set(caseW / 2, 4, -D / 2 - 0.02);
 
   // Framed poster and a paper bin on the wall left of the case. Wide screens frame them in.
-  const px = -caseW / 2 - 0.45 - POSTER_W / 2, py = Math.min(caseH / 2 - POSTER_H / 2 - 0.1, 0.5), pz = -D / 2 + 0.03;
+  // Built at unit size; fitCamera scales and places it to fill the wall left of the case.
+  posterGroup = new THREE.Group(); g.add(posterGroup);
   const poster = new THREE.Mesh(new THREE.PlaneGeometry(POSTER_W, POSTER_H), toon({ map: posterTex }));
-  poster.position.set(px, py, pz); poster.receiveShadow = true; g.add(poster);
+  poster.receiveShadow = true; posterGroup.add(poster);
   const frame = toon({ color: '#3b2416' });
-  for (const [w, h, x, y] of [[POSTER_W + 0.16, 0.08, 0, POSTER_H / 2 + 0.04], [POSTER_W + 0.16, 0.08, 0, -POSTER_H / 2 - 0.04], [0.08, POSTER_H, -POSTER_W / 2 - 0.04, 0], [0.08, POSTER_H, POSTER_W / 2 + 0.04, 0]]) addBox(g, w, h, 0.06, frame, px + x, py + y, pz + 0.01);
+  for (const [w, h, x, y] of [[POSTER_W + 0.16, 0.08, 0, POSTER_H / 2 + 0.04], [POSTER_W + 0.16, 0.08, 0, -POSTER_H / 2 - 0.04], [0.08, POSTER_H, -POSTER_W / 2 - 0.04, 0], [0.08, POSTER_H, POSTER_W / 2 + 0.04, 0]]) addBox(posterGroup, w, h, 0.06, frame, x, y, 0.01);
   const fy = -caseH / 2, bx = -caseW / 2 - 0.6, bz = 0.25;
   const bin = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.7, 10, 1, true), toon({ color: '#7d8794', side: THREE.DoubleSide }));
   bin.position.set(bx, fy + 0.35, bz); bin.castShadow = bin.receiveShadow = true; g.add(bin);
@@ -371,11 +372,23 @@ function usable() { return (innerHeight - (innerWidth < 640 ? 190 : 200)) / inne
 function fitCamera() {
   const w = innerWidth, h = innerHeight;
   camera.aspect = w / h; camera.updateProjectionMatrix();
-  // On wide screens the shelf view also frames the poster and bin on the left.
-  shelfX = cols > 1 && camera.aspect >= 1.25 ? -(POSTER_W + 0.9) / 2 : 0;
-  const byW = ((caseW - shelfX * 2) * 1.06) / (2 * FOV_T * camera.aspect);
+  const perUnit = 2 * FOV_T * camera.aspect; // visible width per unit of distance
   const byH = (caseH * 1.04) / (2 * FOV_T * usable());
-  dist = cols === 1 ? byW : Math.max(byW, byH);
+  if (cols === 1) {
+    shelfX = 0; posterGroup.visible = false;
+    dist = (caseW * 1.06) / perUnit;
+  } else {
+    // The case fills the height; the poster grows into whatever wall is left, with equal margins on both sides.
+    const m = 0.35, gap = 0.45, pwMin = 1.3, pwMax = (caseH * 0.68 * POSTER_W) / POSTER_H;
+    dist = byH;
+    let avail = dist * perUnit - caseW - 2 * m - gap;
+    if (avail < pwMin) { avail = pwMin; dist = (caseW + 2 * m + gap + pwMin) / perUnit; }
+    const pw = Math.min(avail, pwMax), s = pw / POSTER_W;
+    const left = caseW / 2 - caseW - gap - pw;
+    posterGroup.visible = true; posterGroup.scale.setScalar(s);
+    posterGroup.position.set(left + pw / 2, caseH / 2 - 0.3 - (POSTER_H * s) / 2, -D / 2 + 0.03);
+    shelfX = (left + caseW / 2) / 2 + 0.12; // the case front sits closer to the camera, so nudge right to even the margins
+  }
   const over = Math.max(0, caseH * 1.04 - 2 * dist * FOV_T * usable());
   yTop = over / 2; yBottom = -over / 2;
   scrollRange = view === 'shelf' && over > 0 ? (over / (2 * dist * FOV_T)) * h * 1.4 : 0;
