@@ -36,7 +36,6 @@ const connector = { note: 'Add it in Claude: Settings, then Connectors. It works
 export const library = {
   owner: 'Arin',
   title: "Arin's Claude Library",
-  tagline: 'Every agent, skill, plugin and tool I work with, one book each.',
   updated: '25 Nov 2026',
   shelves: [
     {

@@ -1,34 +1,40 @@
 """Takes the README screenshots and runs a smoke test of every interaction.
 
 Usage: python -m http.server 8791 (in the repo root), then python tools/shoot.py
-Needs: python -m pip install playwright && python -m playwright install chromium
+Needs: python -m pip install playwright (uses an installed Chrome, or run python -m playwright install chromium)
 """
 import sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
-URL = 'http://127.0.0.1:8791/index.html?motion'
+URL = 'http://127.0.0.1:8791/index.html'
 OUT = Path(__file__).resolve().parent.parent / 'docs'
 OUT.mkdir(exist_ok=True)
 errors = []
 
 
-def page_for(browser, w, h, mobile=False):
+def page_for(browser, w, h, mobile=False, hash=''):
     ctx = browser.new_context(viewport={'width': w, 'height': h}, device_scale_factor=1, is_mobile=mobile, has_touch=mobile)
     p = ctx.new_page()
     p.on('console', lambda m: m.type == 'error' and errors.append(m.text))
     p.on('pageerror', lambda e: errors.append(str(e)))
-    p.goto(URL)
-    p.wait_for_function("document.getElementById('box-name').textContent.startsWith('Pick')")
-    p.wait_for_timeout(600)
+    p.goto(URL + hash)
+    p.wait_for_function("document.getElementById('box-name').textContent.length > 0 && !document.getElementById('box-name').textContent.startsWith('Dusting')")
+    p.wait_for_timeout(700)
     return p
 
 
 def open_from_catalog(p, name):
     p.click('#index-btn')
-    p.locator('#catalog-list button', has_text=name).first.click()
+    p.fill('#catalog-search', name)
+    p.locator('#catalog-list li:not([hidden]) button', has_text=name).first.click()
     p.wait_for_function("!document.getElementById('reader').hidden || !document.getElementById('phone').hidden")
     p.wait_for_timeout(2600)
+
+
+def closed(p, sel):
+    p.wait_for_timeout(2600)
+    return p.locator(sel).is_hidden()
 
 
 def shot(p, name):
@@ -49,6 +55,7 @@ with sync_playwright() as pw:
         b = pw.chromium.launch(args=args)
 
     p = page_for(b, 1440, 900)
+    check(p.locator('#motion-btn').inner_text() == 'Motion on', 'motion is on by default')
     shot(p, 'shelf')
     p.mouse.move(250, 260)
     p.wait_for_timeout(500)
@@ -70,26 +77,35 @@ with sync_playwright() as pw:
         return [...pg.children].some(c => !c.classList.contains('folio') && c.getBoundingClientRect().bottom > lim + 1);
     }).length""")
     check(overflow == 0, f'{overflow} pages overflow into the page number')
-    p.keyboard.press('Escape')
-    p.wait_for_timeout(1800)
-    check(p.locator('#reader').is_hidden(), 'Escape closes the book')
-    p.wait_for_timeout(1200)
+    p.mouse.click(30, 450)
+    check(closed(p, '#reader'), 'clicking outside the book puts it back')
 
-    p.click('#view-desk')
+    p.locator('#scene').focus()
+    p.keyboard.press('ArrowUp')
+    p.evaluate("document.activeElement.blur()")
+    p.keyboard.press('ArrowRight')
     p.wait_for_timeout(1400)
+    check(p.locator('#view-desk').get_attribute('aria-pressed') == 'true', 'arrow right walks to the desk')
     shot(p, 'desk')
-    open_from_catalog(p, 'The Vault')
+
+    open_from_catalog(p, '02 Work')
+    shot(p, 'vault-file')
+    p.keyboard.press('Escape')
+    check(closed(p, '#reader'), 'Escape closes a file')
+
+    open_from_catalog(p, 'The Claude Handbook')
+    shot(p, 'handbook-contents')
+    p.locator('.leaf .rest .toc-row').nth(7).click()
+    p.wait_for_timeout(2600)
+    shot(p, 'handbook-chapter')
     p.click('#page-next')
     p.wait_for_timeout(1300)
-    shot(p, 'vault')
-    p.keyboard.press('Escape')
-    p.wait_for_timeout(2200)
-    open_from_catalog(p, 'The Rulebook')
-    p.click('#page-next')
-    p.wait_for_timeout(1300)
-    shot(p, 'rulebook')
-    p.keyboard.press('Escape')
-    p.wait_for_timeout(2200)
+    shot(p, 'handbook')
+    p.click('#close-book')
+    p.wait_for_timeout(300)
+    shot(p, 'closing')
+    check(closed(p, '#reader'), 'Put it back closes the handbook')
+
     open_from_catalog(p, 'Plugin phone')
     p.keyboard.press('Enter')
     p.wait_for_timeout(300)
@@ -97,9 +113,12 @@ with sync_playwright() as pw:
     p.keyboard.press('Enter')
     p.wait_for_timeout(300)
     check('Notebook Navigator' in p.locator('#lcd-body').inner_text(), 'phone opens plugin details')
-    p.keyboard.press('Escape')
-    p.wait_for_timeout(1800)
-    check(p.locator('#phone').is_hidden(), 'Escape puts the phone down')
+    p.mouse.click(60, 450)
+    check(closed(p, '#phone'), 'clicking outside puts the phone down')
+
+    d = page_for(b, 1440, 900, hash='#/stark')
+    d.wait_for_timeout(2600)
+    check(not d.locator('#reader').is_hidden(), 'a #/stark link opens that book')
 
     m = page_for(b, 390, 844, mobile=True)
     shot(m, 'mobile-shelf')
@@ -108,6 +127,11 @@ with sync_playwright() as pw:
     m.click('#page-next')
     m.wait_for_timeout(1300)
     shot(m, 'mobile-book')
+    m.click('#close-book')
+    m.wait_for_timeout(2600)
+    m.click('#view-desk')
+    m.wait_for_timeout(1400)
+    shot(m, 'mobile-desk')
     b.close()
 
 print('\n'.join(errors) if errors else 'No console errors, all checks passed.')

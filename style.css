@@ -138,12 +138,37 @@ h1 { font-size: clamp(1.1rem, 2.4vw, 1.6rem); font-weight: 400; margin: 0 0 2px;
 .cover h3 { margin: 0; font-size: clamp(1.4rem, 3.4vw, 2.2rem); font-weight: 400; text-shadow: 0 3px 0 rgba(0,0,0,.45); overflow-wrap: anywhere; }
 .cover p { margin: 0; font-size: 1rem; }
 .cover .plate { background: rgba(0,0,0,.3); padding: 12px 16px; border: var(--px) solid rgba(255,246,223,.75); }
-.skin-folder .cover { color: #2b1d10; }
-.skin-folder .cover h3 { text-shadow: none; }
-.skin-folder .cover .plate { background: #f4ecd0; border-color: #2b1d10; }
-.skin-folder .page { background-color: #fbf7ea; background-image: repeating-linear-gradient(#fbf7ea 0 23px, #d9e3ec 23px 24px); }
-.skin-tome .cover .plate { border-color: #e2c068; }
-.skin-tome .cover h3 { color: #f2d98a; }
+.skin-file .cover { color: #2b1d10; }
+.skin-file .cover h3 { text-shadow: none; }
+.skin-file .cover .plate { background: #f4ecd0; border-color: #2b1d10; }
+.skin-file .page { background-color: #fbf7ea; background-image: repeating-linear-gradient(#fbf7ea 0 23px, #d9e3ec 23px 24px); }
+/* The handbook wears Claude's colors: terracotta cover, ivory plate, the crab above the title. */
+.skin-tome .cover { justify-content: flex-end; padding-bottom: 16%; }
+.skin-tome .cover .plate { background: #f0e6d6; border-color: #a9532f; color: #3d2318; }
+.skin-tome .cover h3 { color: #a9532f; text-shadow: none; }
+.skin-tome .page h4 { color: #a9532f; }
+
+/* Bold runs: the pixel face has one weight, so bold is a 1px synthetic weight plus a soft highlighter. */
+.page strong { font-weight: 700; font-synthesis: weight; color: #1f1a24; background: linear-gradient(transparent 62%, rgba(242, 193, 78, .45) 62%); }
+
+/* Handbook contents and chapter openers */
+.toc-list { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 2px; }
+.toc-row { width: 100%; display: flex; justify-content: space-between; gap: 10px; font: inherit; font-size: clamp(.88rem, 1.4vw, 1rem); text-align: left;
+  background: none; border: 0; border-bottom: 2px dotted #cbb98d; color: var(--ink); padding: 7px 2px; min-height: 36px; }
+.toc-row:hover { background: #efe2bb; }
+.toc-row:focus-visible { outline: var(--px) solid var(--gold); }
+.toc-page { color: var(--ink-soft); }
+.chapter-title { justify-content: center; }
+.chapter-title h3 { font-size: clamp(1.7rem, 3.6vw, 2.5rem); color: #a9532f; }
+.chapter-art { align-items: center; justify-content: center; padding: 0; }
+.chapter-art img { width: 100%; height: auto; aspect-ratio: 22 / 21; image-rendering: pixelated; }
+
+/* Catalog search */
+.catalog-search { display: flex; align-items: center; gap: 10px; padding: 12px 18px 0; }
+.catalog-search label { font-size: 1rem; }
+.catalog-search input { flex: 1; font: inherit; font-size: 1rem; min-height: 44px; padding: 6px 10px; background: #fffaf0; color: var(--ink); border: var(--px) solid var(--ink); }
+.catalog-search input:focus-visible { outline: var(--px) solid var(--gold); outline-offset: 2px; }
+.catalog-empty { padding: 12px 18px 0; margin: 0; color: var(--ink-soft); }
 
 .reader-bar { display: flex; align-items: center; gap: 10px; background: var(--paper); color: var(--ink); padding: 8px; opacity: 0; transition: opacity .3s; }
 #reader.shown .reader-bar { opacity: 1; }

@@ -17,7 +17,6 @@
 <header class="top">
   <div class="title">
     <h1 id="lib-title">Arin's Claude Library</h1>
-    <p id="lib-tagline">Every agent, skill, plugin and tool I work with, one book each.</p>
   </div>
   <nav class="controls" aria-label="Library">
     <div class="tabs" role="group" aria-label="Room">
@@ -86,6 +85,11 @@
     <h2 id="catalog-title">Card catalog</h2>
     <button type="button" class="btn" id="catalog-close">Close</button>
   </div>
+  <div class="catalog-search">
+    <label for="catalog-search">Search</label>
+    <input id="catalog-search" type="search" placeholder="agent, skill, n8n, notion..." autocomplete="off">
+  </div>
+  <p id="catalog-empty" class="catalog-empty" hidden>Nothing on the shelves matches that.</p>
   <div id="catalog-list"></div>
 </dialog>
 

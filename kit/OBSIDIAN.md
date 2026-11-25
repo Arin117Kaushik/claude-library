@@ -2,7 +2,7 @@
 
 Every Obsidian plugin, theme and snippet behind my vault's look.
 
-Generated from the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated 25 Nov 2026.
+From the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated 25 Nov 2026.
 
 ## Plugins
 
@@ -30,7 +30,7 @@ Generated from the [Claude Library](https://github.com/Arin117Kaushik/claude-lib
 
 ## Snippets
 
-- **Colored Sidebar Items** by CyanVoxel: Colors every folder that starts with a number prefix, so 01 to 06 each get their own color in the sidebar. Drop it in .obsidian/snippets and turn it on under Appearance. [Download CSS](kit/obsidian/colored-sidebar-items.css)
+- **Colored Sidebar Items** by CyanVoxel: Colors every folder that starts with a number prefix, so 01 to 06 each get their own color in the sidebar. The files in the organizer use the same colors. Drop it in .obsidian/snippets and turn it on under Appearance. [Download CSS](kit/obsidian/colored-sidebar-items.css)
 
 ## Core plugins
 

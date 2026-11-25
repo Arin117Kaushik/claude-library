@@ -10,25 +10,33 @@ My whole Claude Code setup as a pixel-art room. Every agent, skill, plugin, MCP 
 
 The bookshelf holds 95 books on 9 shelves: agents, design skills, build method skills, workflow skills, plugins and hooks, local MCP servers, connectors, CLI tools and Python packages. Spine color tells you the shelf. Grey spines are installed but switched off.
 
-The desk next to it has three things on it:
+The desk next to it holds:
 
-- The Vault, a folder that explains how my Obsidian vault is laid out: the six numbered folders, how tags work, the note template and the file rules.
-- The plugin phone, an old keypad phone. Scroll its menus to see every Obsidian plugin, theme and CSS snippet behind the vault's look, with links to install each one.
-- The Rulebook, a thick book with the rules Claude follows here: how it talks to me, the ADHD working rules, the banned writing tells, which skills are mandatory, and the antislop design filter.
+- **The Vault**, a file organizer with one file per Obsidian folder. Each file says what the folder is for, what goes in, what stays out and its rules. The last two files cover indexes, tags, the note template and a prompt to set up the same vault. The file colors match the vault's colored sidebar.
+- **The plugin phone**, an old keypad phone. Scroll its menus to see every Obsidian plugin, theme and CSS snippet behind the vault's look, with links to install each one.
+- **The Claude Handbook**, the rules Claude follows here, in ten chapters: how it talks to me, the ADHD working rules, the banned writing tells, which skills are mandatory, the antislop design filter and more. It opens on a contents page you can click, and every chapter opens with Clawd, the Claude Code crab, in a different outfit.
+- A fishbowl with a clownfish, because a desk needs one.
+
+![The desk](docs/desk.png)
 
 | Open book | Page turn | Install page |
 |---|---|---|
 | ![A book open on its first spread](docs/book.png) | ![A page curling mid-turn](docs/page-turn.png) | ![The install page with a copy button](docs/install.png) |
 
-| The desk | The plugin phone | The rulebook |
+| Handbook contents | A chapter opener | A vault file |
 |---|---|---|
-| ![The desk with the rulebook, vault folder and phone](docs/desk.png) | ![The phone listing Obsidian plugins](docs/phone.png) | ![A spread from the rulebook](docs/rulebook.png) |
+| ![The handbook contents page](docs/handbook-contents.png) | ![Clawd with a saxophone opening a chapter](docs/handbook-chapter.png) | ![The 02 Work file open](docs/vault-file.png) |
+
+| The plugin phone | Handbook pages | Closing a book |
+|---|---|---|
+| ![The phone listing Obsidian plugins](docs/phone.png) | ![A handbook spread with bold highlights](docs/handbook.png) | ![The cover swinging shut](docs/closing.png) |
 
 On a phone the shelf becomes one tall bookcase you scroll, and books open one page at a time.
 
 <p>
-  <img src="docs/mobile-shelf.png" alt="The library on a phone" width="260">
-  <img src="docs/mobile-book.png" alt="A book open on a phone" width="260">
+  <img src="docs/mobile-shelf.png" alt="The library on a phone" width="240">
+  <img src="docs/mobile-book.png" alt="A book open on a phone" width="240">
+  <img src="docs/mobile-desk.png" alt="The desk on a phone" width="240">
 </p>
 
 ## Take what you want
@@ -61,7 +69,7 @@ Try: *"Read RULES.md and VAULT.md from Arin117Kaushik/claude-library and set up 
 Fork the repo and edit two files. No build step.
 
 - **`library.js`** holds the shelves and books. Each book has a name, a one-line blurb, what it does, how it works, when to use it, example prompts, a tip and an install command. Only the name, kind, blurb and description are required.
-- **`desk.js`** holds the folder, phone and rulebook contents.
+- **`desk.js`** holds the vault files, the phone menus and the handbook chapters. Text in either file can use `**bold**`.
 
 ```js
 { n: 'Stark', k: 'Agent · strategist', b: 'Talks a decision through and ends with one recommendation.',
@@ -91,16 +99,22 @@ After editing, `node tools/export.mjs` regenerates the Markdown in `kit/`, and `
 | Pick a book | Hover a spine | Tap once | Tab to the room, then arrow keys |
 | Open it | Click | Tap again, or Read | Enter |
 | Turn pages | Click the page edge | Swipe | Left and right arrows, Home, End |
-| Put it back | Put it back | Put it back | Escape |
+| Put it back | Click outside it, or Put it back | Tap outside it | Escape |
 | Phone menus | Click a row | Tap a row | Up, down, Enter, Backspace, or number keys |
+| Switch rooms | Bookshelf and Desk tabs | Same | Arrow right past the last book on a right-hand shelf walks to the desk. Arrow left from the first desk item walks back. Before you pick anything, left and right switch rooms directly. |
+| Search | Card catalog | Card catalog | Press `/` |
 
-The **Card catalog** lists every item as plain links. The **Motion** switch turns the animations off. It starts from your system's reduce motion setting.
+The **Card catalog** lists every item and has a search box. The **Motion** switch turns the animations off and remembers your choice.
+
+Every item has its own link: opening one puts it in the address bar, like `#/stark` or `#/the-claude-handbook`, so you can share a single book.
 
 ## How it's built
 
 - **three.js** renders the room at a third of screen resolution, then scales it up with hard pixels, so the 3D reads as pixel art. Every texture is drawn on a tiny canvas in code: no image files.
 - When you open a book, the 3D book flies to exactly where the HTML book appears, then hands over. Text in books stays crisp, selectable and readable by screen readers.
-- The page curl splits a turning page into eight hinged strips that bend one after another, so the free edge leads like real paper. At rest a page is a single normal element.
+- The page curl splits a turning page into eight hinged strips that bend one after another, so the free edge leads like real paper. At rest a page is a single normal element. Closing swings every turned page shut together, like a real cover.
+- Pages are measured as they are filled, so content flows onto as many pages as it needs. Handbook chapters always open on a left page with the art on the right.
+- Clawd and his ten outfits are tiny sprites drawn in code, one string per row of pixels.
 - Built under the [antislop](https://github.com/miqdadbadjuber/anti-slop) design rules: one gold accent, a game-style dialog box as the identity motif, full keyboard use, and real content only.
 
 ## Credits

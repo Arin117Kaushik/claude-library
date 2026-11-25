@@ -1,8 +1,8 @@
 # Arin's Claude Library
 
-Every agent, skill, plugin and tool I work with, one book each.
+Every agent, skill, plugin and tool in the setup, with how to install it.
 
-Generated from the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated 25 Nov 2026.
+From the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated 25 Nov 2026.
 
 ## Agents
 

@@ -13,10 +13,11 @@ const sections = (list) => list.map((s) => {
   return '';
 }).join('\n');
 
-const header = (title, line) => `# ${title}\n\n${line}\n\nGenerated from the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated ${library.updated}.\n`;
+const header = (title, line) => `# ${title}\n\n${line}\n\nFrom the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated ${library.updated}.\n`;
+const demote = (s) => s.replaceAll('\n## ', '\n### ');
 
-writeFileSync('kit/VAULT.md', header(desk.folder.n, desk.folder.b) + sections(desk.folder.sections));
-writeFileSync('kit/RULES.md', header(desk.rulebook.n, desk.rulebook.b) + sections(desk.rulebook.sections));
+writeFileSync('kit/VAULT.md', header(desk.files.n, desk.files.b) + desk.files.items.map((f) => `\n## ${f.n}\n\n${f.b}\n\n` + demote(sections(f.sections))).join('\n'));
+writeFileSync('kit/RULES.md', header(desk.handbook.n, desk.handbook.b) + desk.handbook.chapters.map((c, i) => `\n## ${i + 1}. ${c.title}\n\n*${c.intro}*\n\n` + demote(sections(c.sections))).join('\n'));
 
 const phone = desk.phone.menus.map((m) => `\n## ${m.name}\n\n` + m.items.map((i) => {
   const links = (i.links || []).map((l) => `[${l.label}](${l.href})`).join(' · ');
@@ -38,5 +39,5 @@ const book = (b) => {
   return lines.join('\n');
 };
 const lib = library.shelves.map((s) => `\n## ${s.name}\n\n` + s.books.map(book).join('\n\n')).join('\n');
-writeFileSync('kit/LIBRARY.md', header(library.title, library.tagline) + lib + '\n');
+writeFileSync('kit/LIBRARY.md', header(library.title, 'Every agent, skill, plugin and tool in the setup, with how to install it.') + lib + '\n');
 console.log('Wrote kit/LIBRARY.md, kit/VAULT.md, kit/RULES.md, kit/OBSIDIAN.md');

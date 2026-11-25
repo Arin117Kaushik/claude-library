@@ -1,44 +1,183 @@
 # The Vault
 
-How my notes vault is laid out, tagged and kept tidy.
+One file per vault folder: what goes in it, what stays out, and the rules.
 
-Generated from the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated 25 Nov 2026.
+From the [Claude Library](https://github.com/Arin117Kaushik/claude-library). Updated 25 Nov 2026.
 
-## Why it looks like this
+## 01 Inbox
 
-One Obsidian vault is my second brain and the shared memory between me and Claude. Agents read it, write to it and follow its rules, so the structure has to be obvious to a person and to a model at the same time.
-
-Six numbered folders, one index note per folder, one master index. No deep trees at the top level: the number tells you where something is in its life, the tags tell you what it is about.
+Capture first, sort later.
 
 
-## The folders
+### What it is
 
-- **01 Inbox**: Capture first, sort later. Every new note lands here: quick thoughts, agent research, podcast summaries, saved links. Placement is never a reason to delay writing something down.
-- **02 Work**: Active work. One folder per client or project, holding briefs, SOPs, contacts and deliverables. If it has a deadline, it lives here.
-- **03 Learning**: What I am studying right now: AI agents, automation, courses, upskill plans and experiments.
-- **04 Archive**: Finished or old material kept for reference. Notes are never deleted, they move here. Real junk (binary exports, zip files, media clutter) is deleted instead.
-- **05 Agentic System**: The Claude setup itself: the capability index, working rules, prompts, templates and agent configs. This library is generated from the same facts.
-- **06 System**: Automations, scripts, data exports and the output of scheduled jobs. Machinery, not reading material.
+The front door of the vault. **Every new note lands here first**, whoever writes it: me, an agent saving research, or a scheduled job writing summaries.
 
 
-## Indexes
+### What goes in
 
-- HOME.md is the master index. It links every section.
-- Each folder has an _index.md with one line per note: the link, then what it is in a short phrase.
-- Adding a note means adding its line to that folder's _index.md. Agents do this too.
-- A CLAUDE.md in the vault root holds the rules any agent must follow here.
-
-
-## How tags work
-
-Two layers. Folders say where a note sits in its life. Tags say what it is about and what kind of note it is.
-
-- **Topic tags**: A Tags: line under the header, lowercase and comma separated: adhd, podcast, summary, or the source a note came from. Search and the tag pane run on these.
-- **Type tags**: In frontmatter for notes with a role: type/reference, type/sop, type/index. They answer "what kind of note is this" across every folder.
-- **Status**: Long-lived reference notes carry status: active in frontmatter, so stale ones are easy to find.
+- Quick thoughts and voice note transcripts
+- Research an agent saved for later
+- Podcast and video summaries
+- Links and clippings to read
 
 
-## Every new note starts like this
+### Rules
+
+- **Placement never delays writing.** If you are unsure where a note belongs, it belongs here.
+- Sort once a week: move each note to Work, Learning or Archive, or delete real junk.
+- Agents default to this folder when the user does not name one.
+
+
+### Why it works
+
+Deciding where something goes is a small decision, and small decisions are where capture dies. One default folder removes the decision.
+
+
+## 02 Work
+
+Active work with deadlines.
+
+
+### What it is
+
+Everything tied to a client, a project or a deadline. **One subfolder per client or project**, so a brief, its SOPs and its deliverables sit together.
+
+
+### What goes in
+
+- Briefs and meeting notes
+- SOPs and checklists for repeat work
+- Contacts and handover notes
+- Drafts of deliverables
+
+
+### Rules
+
+- **If it has a deadline, it lives here.**
+- A project folder gets its own CLAUDE.md when an agent works on it often, so the agent knows the brief without being told.
+- Finished projects move to Archive as a whole folder.
+
+
+## 03 Learning
+
+What I am studying right now.
+
+
+### What it is
+
+Courses, upskill plans, experiments and notes on tools I am learning. **Only what is active**: once I stop studying something, it moves to Archive.
+
+
+### What goes in
+
+- Learning plans with weekly goals
+- Notes from courses and docs
+- Small experiments and what they taught me
+
+
+### Rules
+
+- Write what I tried and what happened, not copied documentation.
+- Link each note to the project it helped, so learning shows up where it was used.
+
+
+## 04 Archive
+
+Finished or old, kept for reference.
+
+
+### What it is
+
+Where finished projects and old notes go. **Notes are never deleted, they move here.** Search still finds them and links still work.
+
+
+### What goes in
+
+- Finished client projects, as whole folders
+- Old jobs and past experiments
+- Superseded versions of config files
+
+
+### What gets deleted instead
+
+Real junk only: binary exports, zip files, stray media and IDE leftovers. If it is text someone wrote, it is archived.
+
+
+## 05 Agentic System
+
+The Claude setup itself.
+
+
+### What it is
+
+The configuration of the AI side: the **capability index** of every agent, skill and tool, the working rules, prompts, templates and agent configs. This library is built from the same facts.
+
+
+### What goes in
+
+- The capability index, updated whenever something is installed
+- Working rules too long for CLAUDE.md
+- Prompt templates and agent drafts
+- A research source map: where good sources live, per topic
+
+
+### Rules
+
+- **Keep CLAUDE.md short.** Long rules live here and CLAUDE.md points to them.
+- When an agent or skill is added, the index note is updated in the same session.
+
+
+## 06 System
+
+Automations, scripts and their output.
+
+
+### What it is
+
+The machinery: scripts, scheduled jobs and what they write. **Not reading material**, so it stays out of the way of real notes.
+
+
+### What goes in
+
+- Scripts that run on a schedule
+- Their state files and logs
+- Data exports and automation workflow files
+
+
+### Rules
+
+- A script that writes notes writes them into Inbox, not here.
+- Every script has a one-line description in the folder index.
+
+
+## Indexes & tags
+
+How everything is found again.
+
+
+### Indexes
+
+- **HOME.md** is the master index and the startup page. It links every section.
+- Each folder has an **_index.md** with one line per note: the link, then what it is.
+- Adding a note means adding its line to the folder index. Agents do this too.
+
+
+### Two kinds of tags
+
+- **Topic tags**: A **Tags:** line under the header, lowercase and comma separated: adhd, podcast, summary, or the source a note came from.
+- **Type tags**: In frontmatter for notes with a role: **type/reference**, **type/sop**, **type/index**. They say what kind of note it is across every folder.
+- **Status**: Long-lived notes carry **status: active**, so stale ones are easy to find.
+
+Folders say where a note is in its life. Tags say what it is about. Neither tries to do the other's job.
+
+
+## Rules & setup
+
+The note template, writing rules and a setup prompt.
+
+
+### Every new note starts like this
 
 ```
 Created on: {{date}} {{time}}
@@ -46,30 +185,26 @@ Tags:
 ___
 ```
 
-Three lines, nothing else to fill in. A low bar to start writing matters more than perfect metadata.
+Three lines, nothing to fill in. **A low bar to start matters more than perfect metadata.**
 
 
-## Writing rules
+### Writing rules
 
-- Plain, short sentences. No em dashes, no buzzwords, no filler superlatives.
-- Link related notes with [[wikilinks]] so the graph does the remembering.
-- Links sit inline next to what they refer to, never collected at the bottom.
-- Headers name the subject. How a note was made goes in the body or nowhere.
-- Research that should last goes through the research-doc skill, so every research note has the same shape.
-
-
-## File rules
-
-- Downloads, images and media go outside the vault, in a Downloads folder per project. The vault stays text.
-- Archive notes, never delete them. Delete only real junk.
-- The vault is a git repository, so every agent edit can be traced and undone.
-- Agents reach the vault through the Local REST API plugin and the obsidian MCP server, not raw file writes, when Obsidian is open.
-- Folder colors come from a CSS snippet keyed to the number prefixes, so the sidebar reads at a glance.
+- Plain, short sentences. No em dashes, no buzzwords.
+- Link related notes with **[[wikilinks]]**.
+- Links sit inline next to what they refer to.
+- Research that should last goes through the research-doc skill.
 
 
-## For your agent
+### File rules
 
-Paste this into Claude in an empty vault to set up the same skeleton. Change the folder names to fit your life.
+- Media and downloads live **outside the vault**, in a Downloads folder per project.
+- The vault is a **git repository**, so every agent edit can be undone.
+- Agents edit through the Local REST API plugin while Obsidian is open.
+- A **CLAUDE.md** in the vault root holds the rules every agent follows.
+
+
+### Set up your own
 
 ```
 Set up my Obsidian vault with six numbered folders: 01 - Inbox, 02 - Work, 03 - Learning, 04 - Archive, 05 - Agentic System, 06 - System. Add an _index.md in each with a one-line purpose, a HOME.md linking all of them, and a CLAUDE.md with these rules: new notes go to Inbox, every note starts with "Created on / Tags: / ___", archive instead of delete, update the folder _index.md when adding a note, and keep media outside the vault.
