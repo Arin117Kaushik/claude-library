@@ -10,22 +10,12 @@ const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 function hash(s) { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return (h >>> 0) / 4294967295; }
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
-// ---------- motion setting ----------
-// On by default (owner's call, overrides the system reduce-motion setting). The Motion switch turns it off and is remembered.
-const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* private mode */ } } };
-let motion = new URLSearchParams(location.search).has('motion') || store.get('motion') !== 'off';
-function setMotion(on, save) {
-  motion = on;
-  document.documentElement.classList.toggle('motion', on);
-  const b = $('motion-btn'); b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'Motion on' : 'Motion off';
-  if (save) store.set('motion', on ? 'on' : 'off');
-}
-setMotion(motion, false);
-$('motion-btn').onclick = () => setMotion(!motion, true);
-const wait = (ms) => new Promise((r) => setTimeout(r, motion ? ms : 0));
+// ---------- timing ----------
+// Motion is always on, by design: the system reduce-motion setting is not followed.
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 function tween(ms, fn) {
   return new Promise((res) => {
-    if (!motion || ms <= 0) { fn(1); res(); return; }
+    if (ms <= 0) { fn(1); res(); return; }
     const t0 = performance.now();
     const step = (now) => { const t = Math.min(1, (now - t0) / ms); fn(t); t < 1 ? requestAnimationFrame(step) : res(); };
     requestAnimationFrame(step);
@@ -259,7 +249,7 @@ function buildFishbowl(group, x, z) {
   fishbowl = { fish, weeds, bubbles, cy };
 }
 function animateBowl(t) {
-  if (!fishbowl || !motion) return;
+  if (!fishbowl) return;
   const { fish, weeds, bubbles, cy } = fishbowl;
   const a = t * 0.7;
   fish.position.set(Math.cos(a) * 0.22, cy - 0.04 + Math.sin(t * 1.6) * 0.04, Math.sin(a) * 0.22);
@@ -384,7 +374,7 @@ function pose(v) {
 function ensureVisible(b) {
   if (!scrollRange || !b.mesh || view !== 'shelf') return;
   const t = clamp((yTop - b.mesh.position.y) / (yTop - yBottom || 1), 0, 1);
-  if (Math.abs(b.mesh.position.y - camYForScroll()) > dist * FOV_T * 0.55) scrollTo({ top: t * scrollRange, behavior: motion ? 'smooth' : 'auto' });
+  if (Math.abs(b.mesh.position.y - camYForScroll()) > dist * FOV_T * 0.55) scrollTo({ top: t * scrollRange, behavior: 'smooth' });
 }
 function setView(v) {
   if (busy || reading || v === view) return;
@@ -409,6 +399,17 @@ document.addEventListener('keydown', (e) => {
   if (document.activeElement !== document.body) return;
   e.preventDefault(); setView(e.key === 'ArrowRight' ? 'desk' : 'shelf');
 });
+// Scroll down to walk to the desk, up to walk back. On a phone the shelf scrolls first, then the desk.
+let wheelLock = 0;
+addEventListener('wheel', (e) => {
+  if (reading || busy || catalog.open || performance.now() < wheelLock) return;
+  const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  if (Math.abs(d) < 25) return;
+  if (d > 0 && view === 'shelf' && (!scrollRange || scrollY >= scrollRange - 2)) setView('desk');
+  else if (d < 0 && view === 'desk') setView('shelf');
+  else return;
+  wheelLock = performance.now() + 1100;
+}, { passive: true });
 $('view-shelf').onclick = () => setView('shelf');
 $('view-desk').onclick = () => setView('desk');
 
@@ -720,7 +721,6 @@ function updateCount() {
 const TURN_MS = 900;
 function animateTurn(leaf, forward) {
   const from = forward ? 0 : -180, to = forward ? -180 : 0;
-  if (!motion) { leaf.style.transform = `rotateY(${to}deg)`; return Promise.resolve(); }
   leaf.style.transform = 'none'; leaf.classList.add('turning');
   spread.style.setProperty('--turn', TURN_MS + 'ms');
   const segs = leaf.segs;
@@ -744,14 +744,13 @@ function turn(to) {
   const done = animateTurn(leaf, forward);
   stack(); updateCount();
   done.then(stack);
-  if (flips !== to) setTimeout(() => turn(to), motion ? (Math.abs(to - flips) > 2 ? 70 : 140) : 0);
+  if (flips !== to) setTimeout(() => turn(to), Math.abs(to - flips) > 2 ? 70 : 140);
 }
 // Closing shuts the book in one motion: every turned page swings back together, like a real cover.
 function shut() {
   const turned = leaves.slice(0, flips);
   flips = 0; spread.classList.add('closed'); updateCount();
   if (!turned.length) return Promise.resolve();
-  if (!motion) { turned.forEach((l) => { l.style.transform = 'rotateY(0deg)'; }); stack(); return Promise.resolve(); }
   const D = 650;
   turned.forEach((l, i) => { l.style.zIndex = 500 + i; });
   const anims = turned.map((l) => l.animate([{ transform: 'rotateY(-180deg)' }, { transform: 'rotateY(0deg)' }], { duration: D, easing: 'cubic-bezier(.5,0,.3,1)', fill: 'forwards' }));
@@ -992,7 +991,7 @@ let last = performance.now();
 function loop(now) {
   const dt = Math.min(0.05, (now - last) / 1000); last = now;
   if (!reading && !busy) {
-    camX = motion ? lerp(camX, parallax * 0.18, Math.min(1, dt * 3)) : 0;
+    camX = lerp(camX, parallax * 0.18, Math.min(1, dt * 3));
     const target = pose(view);
     const e = ease(viewT);
     camera.position.lerpVectors(camFrom.pos, target.pos, e); camLook.lerpVectors(camFrom.look, target.look, e);
@@ -1000,7 +999,7 @@ function loop(now) {
     for (const it of [...books, ...deskItems]) {
       if (!it.mesh || it.mesh.parent === scene) continue;
       const goal = it === sel || it === hovered ? (it.axis === 'z' ? 0.14 : 0.12) : 0;
-      it.pull = lerp(it.pull, goal, motion ? Math.min(1, dt * 12) : 1);
+      it.pull = lerp(it.pull, goal, Math.min(1, dt * 12));
       applyPull(it);
     }
     for (const p of plaques) {

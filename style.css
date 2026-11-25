@@ -239,4 +239,3 @@ h1 { font-size: clamp(1.1rem, 2.4vw, 1.6rem); font-weight: 400; margin: 0 0 2px;
   .lcd { height: min(250px, 46vh); }
 }
 
-html:not(.motion) *, html:not(.motion) *::before, html:not(.motion) *::after { transition-duration: 0s !important; animation: none !important; }

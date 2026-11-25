@@ -101,10 +101,10 @@ After editing, `node tools/export.mjs` regenerates the Markdown in `kit/`, and `
 | Turn pages | Click the page edge | Swipe | Left and right arrows, Home, End |
 | Put it back | Click outside it, or Put it back | Tap outside it | Escape |
 | Phone menus | Click a row | Tap a row | Up, down, Enter, Backspace, or number keys |
-| Switch rooms | Bookshelf and Desk tabs | Same | Arrow right past the last book on a right-hand shelf walks to the desk. Arrow left from the first desk item walks back. Before you pick anything, left and right switch rooms directly. |
+| Switch rooms | Bookshelf and Desk tabs, or scroll down for the desk and up for the shelf | Tabs | Arrow right past the last book on a right-hand shelf walks to the desk. Arrow left from the first desk item walks back. Before you pick anything, left and right switch rooms directly. |
 | Search | Card catalog | Card catalog | Press `/` |
 
-The **Card catalog** lists every item and has a search box. The **Motion** switch turns the animations off and remembers your choice.
+The **Card catalog** lists every item and has a search box.
 
 Every item has its own link: opening one puts it in the address bar, like `#/stark` or `#/the-claude-handbook`, so you can share a single book.
 

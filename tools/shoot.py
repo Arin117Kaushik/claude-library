@@ -55,7 +55,7 @@ with sync_playwright() as pw:
         b = pw.chromium.launch(args=args)
 
     p = page_for(b, 1440, 900)
-    check(p.locator('#motion-btn').inner_text() == 'Motion on', 'motion is on by default')
+    check(p.locator('#motion-btn').count() == 0, 'there is no motion switch')
     shot(p, 'shelf')
     p.mouse.move(250, 260)
     p.wait_for_timeout(500)
@@ -80,6 +80,13 @@ with sync_playwright() as pw:
     p.mouse.click(30, 450)
     check(closed(p, '#reader'), 'clicking outside the book puts it back')
 
+    p.mouse.move(700, 400)
+    p.mouse.wheel(0, 300)
+    p.wait_for_timeout(1400)
+    check(p.locator('#view-desk').get_attribute('aria-pressed') == 'true', 'scrolling down walks to the desk')
+    p.mouse.wheel(0, -300)
+    p.wait_for_timeout(1400)
+    check(p.locator('#view-shelf').get_attribute('aria-pressed') == 'true', 'scrolling up walks back to the shelf')
     p.locator('#scene').focus()
     p.keyboard.press('ArrowUp')
     p.evaluate("document.activeElement.blur()")
