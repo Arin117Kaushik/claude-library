@@ -379,15 +379,16 @@ function fitCamera() {
     dist = (caseW * 1.06) / perUnit;
   } else {
     // The case fills the height; the poster grows into whatever wall is left, with equal margins on both sides.
-    const m = 0.35, gap = 0.45, pwMin = 1.3, pwMax = (caseH * 0.68 * POSTER_W) / POSTER_H;
+    const mL = 0.12, mR = 0.35, gap = 0.45, pwMin = 1.3, pwMax = (caseH * 0.68 * POSTER_W) / POSTER_H;
     dist = byH;
-    let avail = dist * perUnit - caseW - 2 * m - gap;
-    if (avail < pwMin) { avail = pwMin; dist = (caseW + 2 * m + gap + pwMin) / perUnit; }
+    let avail = dist * perUnit - caseW - mL - mR - gap;
+    if (avail < pwMin) { avail = pwMin; dist = (caseW + mL + mR + gap + pwMin) / perUnit; }
     const pw = Math.min(avail, pwMax), s = pw / POSTER_W;
     const left = caseW / 2 - caseW - gap - pw;
     posterGroup.visible = true; posterGroup.scale.setScalar(s);
     posterGroup.position.set(left + pw / 2, caseH / 2 - 0.3 - (POSTER_H * s) / 2, -D / 2 + 0.03);
-    shelfX = (left + caseW / 2) / 2 + 0.12; // the case front sits closer to the camera, so nudge right to even the margins
+    // The left margin is kept slim on purpose; +0.12 offsets the case front sitting closer to the camera.
+    shelfX = (left - mL + caseW / 2 + mR) / 2 + 0.12;
   }
   const over = Math.max(0, caseH * 1.04 - 2 * dist * FOV_T * usable());
   yTop = over / 2; yBottom = -over / 2;

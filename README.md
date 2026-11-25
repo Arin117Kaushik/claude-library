@@ -2,7 +2,7 @@
 
 My whole Claude Code setup as a pixel-art room. Every agent, skill, plugin, MCP server and command line tool is a book on a shelf. Pull one out and it flies to you, opens, and explains what it does, how it works, when to use it, and the exact command to install it.
 
-**[Open the library](https://arin117kaushik.github.io/claude-library/)**
+**[Open the library](https://arin117kaushik.github.io/claude-library/)** · **[Build your own with one prompt](PROMPT.md)**
 
 ![The bookshelf](docs/shelf.png)
 
@@ -40,6 +40,12 @@ On a phone the shelf becomes one tall bookcase you scroll, and books open one pa
   <img src="docs/mobile-book.png" alt="A book open on a phone" width="240">
   <img src="docs/mobile-desk.png" alt="The desk on a phone" width="240">
 </p>
+
+## Build your own
+
+[PROMPT.md](PROMPT.md) has one prompt you can paste into Claude Code, Claude or ChatGPT. Your agent interviews you first: where you work with AI, which shelves you want, where your notes live (Obsidian, Notion, Apple Notes, plain folders or nothing), where your AI rules live, and what must stay private. Then it scans or collects your tools and builds your own room on this engine.
+
+You don't need Obsidian, Claude Code or anything from my setup.
 
 ## Take what you want
 
