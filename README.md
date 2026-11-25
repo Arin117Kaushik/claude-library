@@ -17,6 +17,8 @@ The desk next to it holds:
 - **The Claude Handbook**, the rules Claude follows here, in ten chapters: how it talks to me, the ADHD working rules, the banned writing tells, which skills are mandatory, the antislop design filter and more. It opens on a contents page you can click, and every chapter opens with Clawd, the Claude Code crab, in a different outfit.
 - A fishbowl with a clownfish, because a desk needs one.
 
+On the wall left of the shelf hangs a pixelated poster of my favourite anime, Frieren: Beyond Journey's End, next to a paper bin.
+
 ![The desk](docs/desk.png)
 
 | Open book | Page turn | Install page |
@@ -119,8 +121,8 @@ Every item has its own link: opening one puts it in the address bar, like `#/sta
 
 ## Credits
 
-Built with [Claude Code](https://claude.com/claude-code). [three.js](https://threejs.org) (MIT). [DotGothic16](https://fonts.google.com/specimen/DotGothic16) by Fontworks (SIL Open Font License). The transcribe skill is a Windows port of Hugo Manning's [transcribe-skill](https://github.com/learnaiwithhugo/transcribe-skill) (MIT). Jarvis, Cortana and Friday started from [VoltAgent's subagents](https://github.com/VoltAgent/awesome-claude-code-subagents). Third-party skills and plugins on the shelves belong to their authors and link to their sources.
+Built with [Claude Code](https://claude.com/claude-code). [three.js](https://threejs.org) (MIT). [DotGothic16](https://fonts.google.com/specimen/DotGothic16) by Fontworks (SIL Open Font License). The transcribe skill is a Windows port of Hugo Manning's [transcribe-skill](https://github.com/learnaiwithhugo/transcribe-skill) (MIT). Jarvis, Cortana and Friday started from [VoltAgent's subagents](https://github.com/VoltAgent/awesome-claude-code-subagents). Third-party skills and plugins on the shelves belong to their authors and link to their sources. The poster is a pixelated fan tribute to the key visual of *Frieren: Beyond Journey's End* (© Kanehito Yamada, Tsukasa Abe / Shogakukan / Frieren Project Committee); it is not affiliated with them and is not covered by this repo's license.
 
 ## License
 
-MIT for the library code and my own files in `kit/`. Third-party files keep their own licenses.
+MIT for the library code and my own files in `kit/`. Third-party files and the poster artwork keep their own rights.

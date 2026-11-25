@@ -201,6 +201,9 @@ floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
 // ---------- room: bookcase and desk ----------
 const CW = 2.6, CH = 1.28, T = 0.12, D = 0.9, BD = 0.64;
 const DW = 7.0, DD = 2.5, TH = 2.0;
+const POSTER_H = 2.6, POSTER_W = POSTER_H * 72 / 101;
+const posterTex = new THREE.TextureLoader().load('assets/poster.png');
+posterTex.magFilter = posterTex.minFilter = THREE.NearestFilter; posterTex.generateMipmaps = false; posterTex.colorSpace = THREE.SRGBColorSpace;
 const outlineMat = new THREE.MeshBasicMaterial({ color: '#120c10', side: THREE.BackSide });
 const woodMat = toon({ map: woodTex });
 const pagesMat = toon({ map: pagesTex });
@@ -270,6 +273,21 @@ function buildRoom() {
   for (let r = 0; r <= rows; r++) addBox(g, caseW, T, D, woodMat, 0, caseH / 2 - T / 2 - r * (CH + T), 0);
   addBox(g, caseW + 0.16, 0.1, D + 0.12, woodMat, 0, caseH / 2 + 0.05, 0.02);
   wall.position.set(caseW / 2, 4, -D / 2 - 0.02);
+
+  // Framed poster and a paper bin on the wall left of the case. Wide screens frame them in.
+  const px = -caseW / 2 - 0.45 - POSTER_W / 2, py = Math.min(caseH / 2 - POSTER_H / 2 - 0.1, 0.5), pz = -D / 2 + 0.03;
+  const poster = new THREE.Mesh(new THREE.PlaneGeometry(POSTER_W, POSTER_H), toon({ map: posterTex }));
+  poster.position.set(px, py, pz); poster.receiveShadow = true; g.add(poster);
+  const frame = toon({ color: '#3b2416' });
+  for (const [w, h, x, y] of [[POSTER_W + 0.16, 0.08, 0, POSTER_H / 2 + 0.04], [POSTER_W + 0.16, 0.08, 0, -POSTER_H / 2 - 0.04], [0.08, POSTER_H, -POSTER_W / 2 - 0.04, 0], [0.08, POSTER_H, POSTER_W / 2 + 0.04, 0]]) addBox(g, w, h, 0.06, frame, px + x, py + y, pz + 0.01);
+  const fy = -caseH / 2, bx = -caseW / 2 - 0.6, bz = 0.25;
+  const bin = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.7, 10, 1, true), toon({ color: '#7d8794', side: THREE.DoubleSide }));
+  bin.position.set(bx, fy + 0.35, bz); bin.castShadow = bin.receiveShadow = true; g.add(bin);
+  addBox(g, 0.42, 0.02, 0.42, toon({ color: '#2a2d33' }), bx, fy + 0.01, bz);
+  const paper = toon({ color: '#f4ecd0' });
+  for (const [x, y, z, r] of [[-0.06, 0.66, 0.02, 0.1], [0.08, 0.64, -0.05, 0.09], [0.02, 0.74, 0.06, 0.08], [0.45, 0.07, 0.25, 0.07]]) {
+    const ball = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 0), paper); ball.position.set(bx + x, fy + y, bz + z); ball.castShadow = true; g.add(ball);
+  }
   floor.position.set(caseW / 2, -caseH / 2, 2);
 
   cells = library.shelves.map((shelf, si) => {
@@ -347,13 +365,15 @@ function buildRoom() {
 // Links like #/stark open that item straight away, so a single book can be shared.
 const deepLink = location.hash.startsWith('#/') ? [...books, ...deskItems].find((i) => slug(i.n) === location.hash.slice(2)) : null;
 let view = location.hash === '#desk' || (deepLink && deepLink.type !== 'book') ? 'desk' : 'shelf';
-let scrollRange = 0, yTop = 0, yBottom = 0, dist = 10, camX = 0, parallax = 0, viewT = 1;
+let shelfX = 0, scrollRange = 0, yTop = 0, yBottom = 0, dist = 10, camX = 0, parallax = 0, viewT = 1;
 const camFrom = { pos: new V3(), look: new V3() }, camLook = new V3();
 function usable() { return (innerHeight - (innerWidth < 640 ? 190 : 200)) / innerHeight; }
 function fitCamera() {
   const w = innerWidth, h = innerHeight;
   camera.aspect = w / h; camera.updateProjectionMatrix();
-  const byW = (caseW * 1.06) / (2 * FOV_T * camera.aspect);
+  // On wide screens the shelf view also frames the poster and bin on the left.
+  shelfX = cols > 1 && camera.aspect >= 1.25 ? -(POSTER_W + 0.9) / 2 : 0;
+  const byW = ((caseW - shelfX * 2) * 1.06) / (2 * FOV_T * camera.aspect);
   const byH = (caseH * 1.04) / (2 * FOV_T * usable());
   dist = cols === 1 ? byW : Math.max(byW, byH);
   const over = Math.max(0, caseH * 1.04 - 2 * dist * FOV_T * usable());
@@ -364,7 +384,7 @@ function fitCamera() {
 const scroll01 = () => (scrollRange ? clamp(scrollY / scrollRange, 0, 1) : 0);
 const camYForScroll = () => lerp(yTop, yBottom, scroll01()) - 0.08;
 function pose(v) {
-  if (v === 'shelf') { const cy = camYForScroll(); return { pos: new V3(camX, cy + 0.1, dist), look: new V3(0, cy, 0) }; }
+  if (v === 'shelf') { const cy = camYForScroll(); return { pos: new V3(shelfX + camX, cy + 0.1, dist), look: new V3(shelfX, cy, 0) }; }
   const look = new V3(deskX, topY + 0.05, deskZ + 0.15);
   const pitch = THREE.MathUtils.degToRad(46);
   // Portrait screens frame the three objects, not the whole table, so they stay big enough to tap.

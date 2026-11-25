@@ -57,7 +57,7 @@ with sync_playwright() as pw:
     p = page_for(b, 1440, 900)
     check(p.locator('#motion-btn').count() == 0, 'there is no motion switch')
     shot(p, 'shelf')
-    p.mouse.move(250, 260)
+    p.mouse.move(460, 270)
     p.wait_for_timeout(500)
     check(p.locator('#read-btn').is_enabled(), 'hovering a spine selects it')
 
