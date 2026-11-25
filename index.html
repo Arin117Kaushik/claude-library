@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arin's Claude Library</title>
+<meta name="description" content="A pixel-art library of a Claude Code setup: every agent, skill, plugin and tool as a book you can open, plus the vault structure and working rules.">
+<meta property="og:title" content="Arin's Claude Library">
+<meta property="og:description" content="Every agent, skill, plugin and tool in one Claude Code setup, as books on a pixel shelf.">
+<meta property="og:image" content="docs/shelf.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect width='8' height='8' fill='%23141833'/%3E%3Crect x='1' y='1' width='2' height='6' fill='%23b0473c'/%3E%3Crect x='3' y='2' width='2' height='5' fill='%233e7a58'/%3E%3Crect x='5' y='1' width='2' height='6' fill='%233e5f9c'/%3E%3C/svg%3E">
+<link rel="preload" href="vendor/dotgothic16-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.js" } }</script>
+</head>
+<body>
+<header class="top">
+  <div class="title">
+    <h1 id="lib-title">Arin's Claude Library</h1>
+    <p id="lib-tagline">Every agent, skill, plugin and tool I work with, one book each.</p>
+  </div>
+  <nav class="controls" aria-label="Library">
+    <div class="tabs" role="group" aria-label="Room">
+      <button type="button" class="btn tab" id="view-shelf" aria-pressed="true">Bookshelf</button>
+      <button type="button" class="btn tab" id="view-desk" aria-pressed="false">Desk</button>
+    </div>
+    <button type="button" class="btn" id="motion-btn" aria-pressed="true">Motion on</button>
+    <button type="button" class="btn" id="index-btn" aria-haspopup="dialog"><span class="hide-sm">Card </span>Catalog</button>
+  </nav>
+</header>
+
+<main>
+  <div id="scene" tabindex="0" role="group" aria-roledescription="room"
+       aria-label="Bookshelf. Arrow keys pick a book, Enter opens it." aria-describedby="box-text"></div>
+  <div id="labels" aria-hidden="true"></div>
+  <div id="cursor" aria-hidden="true"></div>
+  <div id="spacer"></div>
+</main>
+
+<footer class="box" id="box" aria-live="polite">
+  <button type="button" class="btn icon" id="prev-book" aria-label="Previous item">&#9664;</button>
+  <div class="box-body">
+    <p class="box-name" id="box-name">Dusting the shelves</p>
+    <p class="box-text" id="box-text">Loading the library.</p>
+  </div>
+  <button type="button" class="btn read" id="read-btn" disabled>Read</button>
+  <button type="button" class="btn icon" id="next-book" aria-label="Next item">&#9654;</button>
+</footer>
+
+<div id="reader" role="dialog" aria-modal="true" aria-labelledby="reader-title" hidden>
+  <h2 class="sr-only" id="reader-title">Book</h2>
+  <div class="stage" id="stage">
+    <div class="spread" id="spread"></div>
+  </div>
+  <div class="reader-bar">
+    <button type="button" class="btn icon" id="page-prev" aria-label="Previous page">&#9664;</button>
+    <span id="page-count" aria-live="polite">Cover</span>
+    <button type="button" class="btn icon" id="page-next" aria-label="Next page">&#9654;</button>
+    <button type="button" class="btn" id="close-book">Put it back</button>
+  </div>
+</div>
+
+<div id="phone" role="dialog" aria-modal="true" aria-labelledby="phone-title" hidden>
+  <div class="handset" id="handset">
+    <div class="earpiece" aria-hidden="true"></div>
+    <div class="lcd" id="lcd">
+      <p class="lcd-bar"><span id="phone-title">Menu</span><span aria-hidden="true">▮▮▮</span></p>
+      <div class="lcd-body" id="lcd-body"></div>
+    </div>
+    <div class="softkeys">
+      <button type="button" class="key soft" id="key-select">Select</button>
+      <button type="button" class="key soft" id="key-back">Back</button>
+    </div>
+    <div class="navpad">
+      <button type="button" class="key nav" id="key-up" aria-label="Up">&#9650;</button>
+      <button type="button" class="key nav ok" id="key-ok" aria-label="OK">OK</button>
+      <button type="button" class="key nav" id="key-down" aria-label="Down">&#9660;</button>
+    </div>
+    <div class="keypad" id="keypad"></div>
+  </div>
+  <button type="button" class="btn" id="phone-close">Put it down</button>
+</div>
+
+<dialog id="catalog" aria-labelledby="catalog-title">
+  <div class="catalog-head">
+    <h2 id="catalog-title">Card catalog</h2>
+    <button type="button" class="btn" id="catalog-close">Close</button>
+  </div>
+  <div id="catalog-list"></div>
+</dialog>
+
+<p class="toast" id="toast" role="status" aria-live="polite"></p>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

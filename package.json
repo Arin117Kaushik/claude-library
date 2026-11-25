@@ -1,0 +1,18 @@
+{
+  "name": "claude-library",
+  "version": "1.0.0",
+  "description": "A pixel-art library of a Claude Code setup: agents, skills, plugins and tools as books you can open.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "python -m http.server 8791",
+    "export": "node tools/export.mjs",
+    "vendor": "node -e \"const f=require('fs');f.copyFileSync('node_modules/three/build/three.module.js','vendor/three.module.js');f.copyFileSync('node_modules/three/build/three.core.js','vendor/three.core.js');f.copyFileSync('node_modules/@fontsource/dotgothic16/files/dotgothic16-latin-400-normal.woff2','vendor/dotgothic16-latin-400-normal.woff2')\"",
+    "shoot": "python tools/shoot.py"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@fontsource/dotgothic16": "^5.3.1",
+    "three": "^0.187.0"
+  }
+}

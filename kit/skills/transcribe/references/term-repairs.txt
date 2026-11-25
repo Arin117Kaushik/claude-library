@@ -1,0 +1,43 @@
+# Term repairs, applied to every finished transcript, in order.
+#
+# Format: <regex><TAB><replacement>       Lines starting with # are ignored.
+#
+# Why this file exists: Whisper mishears "Claude" as "cloud" often enough to
+# matter for anyone making or studying AI content. The rules below fix the
+# unambiguous cases and deliberately leave genuine cloud-computing talk alone.
+# Product names go first because they are never ambiguous; the standalone rule
+# runs after and steps aside for "the cloud", "a cloud", and anything followed
+# by a cloud-computing word.
+#
+# Add your own lines as you spot mishearings in your niche's vocabulary.
+# Keep the tab between the two halves.
+
+# --- Product names: unambiguous, always wrong as "cloud" ---
+(?i)\bcloud code\b	Claude Code
+(?i)\bcloud desktop\b	Claude Desktop
+(?i)\bcloud cowork\b	Claude Cowork
+(?i)\bcloud co-?work\b	Claude Cowork
+(?i)\bcloud sonnet\b	Claude Sonnet
+(?i)\bcloud opus\b	Claude Opus
+(?i)\bcloud haiku\b	Claude Haiku
+(?i)\bcloud projects?\b	Claude Projects
+(?i)\bcloud skills?\b	Claude skill
+(?i)\bcloud plugins?\b	Claude plugin
+(?i)\bcloud agent teams?\b	Claude agent team
+(?i)\bcloud\.ai\b	Claude.ai
+(?i)\bcloud's\b	Claude's
+
+# --- "clawed" variants: same mishearing, different spelling ---
+(?i)\bclawed code\b	Claude Code
+(?i)\bclawed desktop\b	Claude Desktop
+(?i)\bclawed cowork\b	Claude Cowork
+(?i)\bclawed co-?work\b	Claude Cowork
+(?i)\bclawed sonnet\b	Claude Sonnet
+(?i)\bclawed opus\b	Claude Opus
+(?i)\bclawed haiku\b	Claude Haiku
+(?i)\bclawed\.ai\b	Claude.ai
+
+# --- Standalone: "Claude" unless it is genuinely about cloud computing ---
+# Skipped after "the"/"a"/"an", and before comput/storage/server/service/etc.
+(?<![Tt]he )(?<![Aa] )(?<![Aa]n )\bCloud\b(?! comput| storage| server| servers| service| services| provider| based| native| infrastructure| hosting| function| functions)	Claude
+(?<![Tt]he )(?<![Aa] )(?<![Aa]n )\bcloud\b(?! comput| storage| server| servers| service| services| provider| based| native| infrastructure| hosting| function| functions)	Claude
